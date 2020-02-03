@@ -11,12 +11,12 @@
 
 #include <Stepper.h>                                // Schrittmotor Library einbinden --> https://www.arduino.cc/en/Reference/Stepper
 
-Stepper Motor(1024, 22, 26, 24, 28);                // Namen eingeben (Schritte pro Umdrehung festlegen, Anschlusspins (1 bis 4) festlegen
+Stepper Motor(1024, A5, A3, A4, A2);                // Namen des Motors festlegen (Schritte pro Umdrehung festlegen, Anschlusspins (1 bis 4) festlegen)
 
 
 void setup() {
  
-  Motor.setSpeed(10);}                              // Geschwindigkeit festlegen
+  Motor.setSpeed(1);}                               // Geschwindigkeit festlegen
 
 
 void loop() {
