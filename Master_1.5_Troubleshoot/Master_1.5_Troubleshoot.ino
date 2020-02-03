@@ -3,7 +3,7 @@
 
   By Paul Zech
 
-  Version 1.4:
+  Version 1.5:
   Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
   Troublehoot: Systemabstürze --> PIN 4 darf nicht verwendet werden, da der Ethernet Stack diesen benötigt.
   
@@ -50,7 +50,7 @@ void setup() {
   
   Serial.begin(9600);                                                               // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
-  Serial.println(F("Einwurfsystem 1.4\n"));                                         // Titel des Programms ausgeben
+  Serial.println(F("Einwurfsystem 1.5\n"));                                         // Titel des Programms ausgeben
   
   if (! RTC.begin()) {                                                              // Fehlermeldung: Kein RTC Modul
     Serial.println(F("RTC Modul nicht vorhanden"));

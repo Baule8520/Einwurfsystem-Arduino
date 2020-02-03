@@ -5,7 +5,7 @@
 
   Version 1.6:
   Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
-  Schrittmotor anstatt Servo --> Noch nicht fertig!
+  Schrittmotor anstatt Servo --> Noch nicht fertig! (!Wird aktuell nicht weiter entwickelt!)
   
  */
 
@@ -50,7 +50,7 @@ void setup() {
   
   Serial.begin(9600);                                                               // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
-  Serial.println(F("Einwurfsystem 1.4\n"));                                         // Titel des Programms ausgeben
+  Serial.println(F("Einwurfsystem 1.6\n"));                                         // Titel des Programms ausgeben
   
   if (! RTC.begin()) {                                                              // Fehlermeldung: Kein RTC Modul
     Serial.println(F("RTC Modul nicht vorhanden"));

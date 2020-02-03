@@ -3,7 +3,7 @@
 
   By Paul Zech
 
-  Version 1.2:
+  Version 1.3:
   Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
   Troublehoot: Um Langzeittest auszuführen brauche ich Zustand der Automatik im Browser
   
@@ -49,7 +49,7 @@ void setup() {
   
   Serial.begin(9600);                                                               // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
-  Serial.println(F("Einwurfsystem 1.2\n"));                                         // Titel des Programms ausgeben
+  Serial.println(F("Einwurfsystem 1.3\n"));                                         // Titel des Programms ausgeben
   
   if (! RTC.begin()) {                                                              // Fehlermeldung: Kein RTC Modul
     Serial.println(F("RTC Modul nicht vorhanden"));

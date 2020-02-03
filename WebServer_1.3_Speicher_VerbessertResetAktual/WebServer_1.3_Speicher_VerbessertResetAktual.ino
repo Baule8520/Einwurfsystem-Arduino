@@ -3,7 +3,7 @@
 
   By Paul Zech
 
-  Version 1.1
+  Version 1.3
  
  */
 
@@ -37,7 +37,7 @@ void setup() {
   Serial.begin(9600);                                       // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
   
-  Serial.println("WebServer Version 1.2\n");                // Titel des Programms ausgeben
+  Serial.println("WebServer Version 1.3\n");                // Titel des Programms ausgeben
 
   Ethernet.begin(mac, ip);                                  // Start des Ethernet Zugriffs
 

@@ -36,7 +36,7 @@ void setup() {
   Serial.begin(9600);                                       // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
   
-  Serial.println("WebServer Version 1.0\n");                // Titel des Programms ausgeben
+  Serial.println("WebServer Version 1.1\n");                // Titel des Programms ausgeben
 
   Ethernet.begin(mac, ip);                                  // Start des Ethernet Zugriffs
 

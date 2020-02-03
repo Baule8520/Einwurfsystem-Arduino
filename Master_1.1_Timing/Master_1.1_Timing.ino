@@ -3,7 +3,7 @@
 
   By Paul Zech
 
-  Version 1.0:
+  Version 1.1:
   Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
  
  */
@@ -45,7 +45,7 @@ void setup() {
 
   Serial.begin(9600);                                                           // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
-  Serial.println("Einwurfsystem 1.0\n");                                        // Titel des Programms ausgeben
+  Serial.println("Einwurfsystem 1.1\n");                                        // Titel des Programms ausgeben
   
   if (! RTC.begin()) {                                                          // Fehlermeldung: Kein RTC Modul
     Serial.println("RTC Modul nicht vorhanden");

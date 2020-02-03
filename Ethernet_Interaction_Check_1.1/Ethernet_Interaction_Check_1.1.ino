@@ -3,7 +3,7 @@
 
   By Paul Zech
 
-  Ohne abwarten des HTTP Request, dafür mit Interaktionsmöglichkeit mit dem Client.
+  Ohne vollständiges abwarten des HTTP Request, dafür mit Interaktionsmöglichkeit mit dem Client.
  
  */
 
@@ -18,7 +18,7 @@ String readString;                                          // Erstellen eines S
 
 void setup() {
   
-  pinMode(2, OUTPUT);                                       // Eingebaute LED aus Output klassifizieren
+  pinMode(2, OUTPUT);                                       // LED an Pin 2 aus Output klassifizieren (bitte an den LED Vorwiderstand 220 Ohm denken)
 
   Serial.begin(9600);                                       // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
@@ -70,7 +70,7 @@ void loop() {
           client.println("<br />");
           client.println("<br />");
             
-          client.println("<a href=\"/?1ein\"\">Ein</a>");                // Inhalt Schalter zum Kontrollieren der Onboard LED
+          client.println("<a href=\"/?1ein\"\">Ein</a>");                // Inhalt Schalter zum Kontrollieren der LED
           client.println("<a href=\"/?1aus\"\">Aus</a><br />"); 
              
           client.println("</html>");
