@@ -3,9 +3,8 @@
 
   By Paul Zech
 
-  Version 1.4:
-  Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
-  Troublehoot: Systemabstürze --> PIN 4 darf nicht verwendet werden, da der Ethernet Stack diesen benötigt.
+  Version 2.1:
+  Enhancement: 2. Zähler, einer Rücksetzbar, einer zählt alle Einwürfe seit letztem Boot
   
  */
 
@@ -32,11 +31,12 @@ int LampeAuto = 3;                                          // Anschluss Kontrol
 
 int Automatik = 1;                                          // Automatischen Modus aktivieren
 int ZustandAutomatik = 1;                                   // Zustand der automatischen Steuerung
-int Eingeworfen = 0;                                        // Anzahl der eingeworfenen Gegenstände auf 0 setzen
+int Eingeworfen = 0;                                        // Anzahl der eingeworfenen Gegenstände
+int EingeworfenInsgesamt = 0;                               // Anzahl der eigeworfenen Gegenstände seit letztem Boot
 int Einwurf = 1;                                            // Zwischenspeicher 1 zum Entprellen der Taste der eingeworfenen Gegenstände
 int Prello = 0;                                             // Zwischenspeicher 2 zum Entprellen der Taste der eingeworfenen Gegenstände
 int Auf = 20;                                               // Servo Position Offen
-int Zu = 170;                                                // Servo Position Geschlossen
+int Zu = 170;                                               // Servo Position Geschlossen
 
 
 void setup() {
@@ -45,12 +45,12 @@ void setup() {
   pinMode(SensorKlappe, INPUT_PULLUP);                                              // Sensor als Input mit Pull Up Widerstand klassifizieren
   pinMode(SensorEinwurf, INPUT_PULLUP);
   pinMode(SensorServo, INPUT_PULLUP);
-  pinMode(LampeServo, OUTPUT);
+  pinMode(LampeServo, OUTPUT);                                                      // LEDs als Output klassifizieren
   pinMode(LampeAuto, OUTPUT);
   
   Serial.begin(9600);                                                               // Seriellen Monitor Starten --> Debugging
   while (!Serial) { ; }
-  Serial.println(F("Einwurfsystem 1.4\n"));                                         // Titel des Programms ausgeben
+  Serial.println(F("Einwurfsystem 2.1\n"));                                         // Titel des Programms ausgeben
   
   if (! RTC.begin()) {                                                              // Fehlermeldung: Kein RTC Modul
     Serial.println(F("RTC Modul nicht vorhanden"));
@@ -84,6 +84,7 @@ void loop() {
    
     if (Einwurf == 0 && Prello == 0) {                                                  // Zählt bei Einwurf == 0 den Eingeworfen nach oben
               Eingeworfen += 1;
+              EingeworfenInsgesamt += 1;
               Einwurf = 1;
               Prello = 1;}
     if (Einwurf == 1 && Prello == 1) {                                                  // Entprellt die Taste um eine halbe Sekunde --> Hier anpassen je nach Sensortyp
@@ -94,30 +95,22 @@ void loop() {
     
     DateTime now = RTC.now();
       
-      if (now.dayOfTheWeek() == 0)  {                                                   // Sonntag
+      if (now.dayOfTheWeek() == 0)  {                                                   // Sonntag (Amerikanisches System: 0 == Sonntag, 1 == Montag, ...)
        if (Zu == 1) { 
-        servo.write(Auf);
+        servo.write(Auf);                                                               // An Tagen an denen die Klappe immer offen sein braucht man nur den Tag, keine Uhrzeit
         digitalWrite(LampeAuto, HIGH);
         ZustandAutomatik = 1;}}
       
-      if (now.dayOfTheWeek() == 1)                                                      // Montag
+      if (now.dayOfTheWeek() == 1) {                                                    // Montag (Unterhalb kann man die Öffnungszeiten eintragen, in diesem Fall von 10:00 bis 12:59:59 und von 16:00 bis 18:59:59)
         if (Zu == 1) {
-          if (now.hour() == 10) {
-            servo.write(Zu);
+          if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17 || now.hour() == 18) {
+            servo.write(Zu);                                                             
             digitalWrite(LampeAuto, LOW);
             ZustandAutomatik = 0;}
-          if (now.hour() == 13) {
+          else {
             servo.write(Auf);
             digitalWrite(LampeAuto, HIGH);
-            ZustandAutomatik = 1;}
-          if (now.hour() == 15) {
-            servo.write(Zu);
-            digitalWrite(LampeAuto, LOW);
-            ZustandAutomatik = 0;}
-          if (now.hour() == 19) {
-            servo.write(Auf);
-            digitalWrite(LampeAuto, HIGH);
-            ZustandAutomatik = 1;}}
+            ZustandAutomatik = 1;}}}
           
       if (now.dayOfTheWeek() == 2)  {                                                   // Dienstag
         if (Zu == 1) {  
@@ -125,46 +118,38 @@ void loop() {
           digitalWrite(LampeAuto, HIGH);
           ZustandAutomatik = 1;}} 
       
-      if (now.dayOfTheWeek() == 3)                                                      // Mittwoch
+      if (now.dayOfTheWeek() == 3)  {                                                   // Mittwoch
        if (Zu == 1) {
-        if (now.hour() == 10) {
-          servo.write(Zu);
-          digitalWrite(LampeAuto, LOW);
-          ZustandAutomatik = 0;}
-        if (now.hour() == 18) {
-          servo.write(Auf);
-          digitalWrite(LampeAuto, HIGH);
-          ZustandAutomatik = 1;}}
+        if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 13 || now.hour() == 14 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17) {
+            servo.write(Zu);
+            digitalWrite(LampeAuto, LOW);
+            ZustandAutomatik = 0;}
+          else {
+            servo.write(Auf);
+            digitalWrite(LampeAuto, HIGH);
+            ZustandAutomatik = 1;}}}
 
-       if (now.dayOfTheWeek() == 4)                                                     // Donnerstag
+       if (now.dayOfTheWeek() == 4)  {                                                  // Donnerstag
         if (Zu == 1) {
-          if (now.hour() == 15) {
+          if (now.hour() == 15 || now.hour() == 16 || now.hour() == 17) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
             ZustandAutomatik = 0;}
-          if (now.hour() == 18) {
+          else {
             servo.write(Auf);
             digitalWrite(LampeAuto, HIGH);
-            ZustandAutomatik = 1;}}
+            ZustandAutomatik = 1;}}}
           
-       if (now.dayOfTheWeek() == 5)                                                     // Freitag
+       if (now.dayOfTheWeek() == 5)  {                                                   // Freitag
         if (Zu == 1) {
-          if (now.hour() == 10) {
+          if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17 || now.hour() == 18) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
             ZustandAutomatik = 0;}
-          if (now.hour() == 13) {
+          else {
             servo.write(Auf);
             digitalWrite(LampeAuto, HIGH);
-            ZustandAutomatik = 1;}
-          if (now.hour() == 15) {
-            servo.write(Zu);
-            digitalWrite(LampeAuto, LOW);
-            ZustandAutomatik = 0;}
-          if (now.hour() == 19) {
-            servo.write(Auf);
-            digitalWrite(LampeAuto, HIGH);
-            ZustandAutomatik = 1;}}
+            ZustandAutomatik = 1;}}}
           
       if (now.dayOfTheWeek() == 6)  {                                                   // Samstag
        if (Zu == 1) {
@@ -190,11 +175,11 @@ void loop() {
 
         if (X == '\n') {                                                                // Wenn eine leere Zeile ankommt (Signalisiert das Ende eines HTTP Request --> nicht ganz optimal, da ja auch davor leere Zeilen vorkommen)
                            
-          client.println("HTTP/1.1 200 OK");                                            // Inhalt der "Website" --> Header
+          client.println("HTTP/1.1 200 OK");                                            // Inhalt der "Website" --> HTML Header
           client.println("Content-Type: text/html");
           client.println();
           
-          client.println("<!DOCTYPE HTML>");                                            // Inhalt der "Website" --> Content
+          client.println("<!DOCTYPE HTML>");                                            // Inhalt der "Website" --> HTML Content
           client.println("<html>");
           client.println("<head>");
           client.println("<title>Steuerung</title>");
@@ -202,7 +187,7 @@ void loop() {
           client.println("<body>");
           client.println("<h1>Test - Einwurfsystem</h1><br />");
           
-          client.println("Letzte Aktualisierung um ");
+          client.println("Letzte Aktualisierung um ");                                  // Gibt die Zeit der letzten Aktualisierung der Website aus
           client.print(now.hour(), DEC);
           client.print(':');
           client.print(now.minute(), DEC);
@@ -216,7 +201,7 @@ void loop() {
           client.print(now.year(), DEC);          
           client.println("<br /><br />");
           
-          client.println("<a href=\"/?1aktual\"\">Aktualisieren</a><br /><br /><br />"); // Schaltfläche Aktualisieren --> ohne Aktion
+          client.println("<a href=\"/?1aktual\"\">Aktualisieren</a><br /><br /><br />"); // Schaltfläche Aktualisieren --> ohne Aktion, lädt nur die Seite neu
           
           client.print("<a href=\"/?1auto\"\">Automatische</a>");                        // href Verlinkung um Aktion auszuführen 
           client.print(" oder ");
@@ -228,7 +213,7 @@ void loop() {
             client.print(" oder ");
             client.println("<a href=\"/?1zu\"\">Klappe Zu</a><br /><br />");}            // href Verlinkung um Aktion auszuführen
 
-          client.println("Im Automatikmodus waere die Klappe ");                         // Zeigt an ob die Automatik die Klappe öffnen oder sperren würde
+          client.println("Im Automatikmodus ist die Klappe ");                           // Zeigt an ob die Automatik die Klappe öffnen oder sperren würde
             if (ZustandAutomatik == 1) {
               client.println("offen");}
             if (ZustandAutomatik == 0) {
@@ -248,14 +233,18 @@ void loop() {
           client.println(Eingeworfen);
           client.println("<br /><br />");
           
-          client.println("<a href=\"/?1reset\"\">Reset des Zaehlers</a><br /><br /><br />");        // Schaltfläche Reset des Zählers 
+          client.println("<a href=\"/?1reset\"\">Reset des Zaehlers</a><br /><br />");  // Schaltfläche Reset des Zählers 
+
+          client.println("Eingeworfene Gegenstaende seit letztem Neustart: ");          // Gibt die Anzahl von "EingeworfenInsgesamt" aus
+          client.println(EingeworfenInsgesamt);
+          client.println("<br /><br /><br />");
           
-          client.println("Systemtemperatur: ");                                         // Nett to know: Eine Temparaturanzeige :-)
+          client.println("Systemtemperatur: ");                                         // Nett to know: Eine Temparaturanzeige des DS3231 Boards :-)
           client.print(RTC.getTemperature());
           client.println(" C");
           
           client.println("</body>");
-          client.println("</html>");
+          client.println("</html>");                                                    // Ende der HTML Informationen
           
           Serial.println(F("Daten abgesendet"));                                        // Information über erfolgreiche Sendung am seriellen Monitor
 

@@ -3,16 +3,16 @@
 
   By Paul Zech
 
-  Version 1.4:
+  Version 1.6:
   Zusammenführen von allen bisherigen Programmen (Ethernet, Webserver und RTC)
-  Troublehoot: Systemabstürze --> PIN 4 darf nicht verwendet werden, da der Ethernet Stack diesen benötigt.
+  Schrittmotor anstatt Servo --> Noch nicht fertig!
   
  */
 
 
 #include <SPI.h>                                            // SPI Controller
 #include <Ethernet.h>                                       // Ethernet Funktionalität
-#include <Servo.h>                                          // Servo Funktion
+#include <Stepper.h>                                        // Schrittmotor Funktion
 #include "RTClib.h"                                         // RTC Library: https://github.com/adafruit/RTClib --> Kann über Strg + Umschalt + I im Manager hinzugefügt werden
 
 
@@ -21,7 +21,7 @@ IPAddress ip(192, 168, 188, 10);                            // Freie IP-Adresse 
 EthernetServer server(80);                                  // Ethernet Port hier eintragen, für HTTP ist 80 der Standardport
 String readString;                                          // Erstellen eines String in dem die Kommunikation mit dem Client gespeichert wird
 
-Servo servo;                                                // Name des Servo Motors
+Stepper Motor(1024, A0, A2, A3, A4);                        // Namen des Servos festlegen (Schritte pro Umdrehung festlegen, Anschlusspins (1 bis 4) festlegen
 RTC_DS3231 RTC;                                             // RTC Board auswählen und benennen
 
 int SensorKlappe = 6;                                       // Anschluss des Sensors für die Klappe
@@ -35,13 +35,13 @@ int ZustandAutomatik = 1;                                   // Zustand der autom
 int Eingeworfen = 0;                                        // Anzahl der eingeworfenen Gegenstände auf 0 setzen
 int Einwurf = 1;                                            // Zwischenspeicher 1 zum Entprellen der Taste der eingeworfenen Gegenstände
 int Prello = 0;                                             // Zwischenspeicher 2 zum Entprellen der Taste der eingeworfenen Gegenstände
-int Auf = 20;                                               // Servo Position Offen
-int Zu = 170;                                                // Servo Position Geschlossen
+int Auf = 40;                                               // Servo Position Offen
+int Zu = 170;                                               // Servo Position Geschlossen
 
 
 void setup() {
 
-  servo.attach(5);                                                                  // Anschluss des Servos
+  Motor.setSpeed(10);                                                               // Geschwindigkeit festlegen
   pinMode(SensorKlappe, INPUT_PULLUP);                                              // Sensor als Input mit Pull Up Widerstand klassifizieren
   pinMode(SensorEinwurf, INPUT_PULLUP);
   pinMode(SensorServo, INPUT_PULLUP);
