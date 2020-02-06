@@ -36,7 +36,7 @@ int Eingeworfen = 0;                                        // Anzahl der eingew
 int Einwurf = 1;                                            // Zwischenspeicher 1 zum Entprellen der Taste der eingeworfenen Gegenstände
 int Prello = 0;                                             // Zwischenspeicher 2 zum Entprellen der Taste der eingeworfenen Gegenstände
 int Auf = 20;                                               // Servo Position Offen
-int Zu = 170;                                                // Servo Position Geschlossen
+int Zu = 170;                                               // Servo Position Geschlossen
 
 
 void setup() {
@@ -79,7 +79,7 @@ void loop() {
 
   EthernetClient client = server.available();                                           // Nach neuem Client suchen
 
-  int Zu = digitalRead(SensorKlappe);
+  int Safe = digitalRead(SensorKlappe);                                                 // Sicherheitsfunktion, Servo wird nur gefahren wenn Klappe zu
   int Einwurf = digitalRead(SensorEinwurf);                                             // Liest den Sensor kontinuierlich ein (Pull Up: Standartsensorwert = 1)
    
     if (Einwurf == 0 && Prello == 0) {                                                  // Zählt bei Einwurf == 0 den Eingeworfen nach oben
@@ -95,13 +95,13 @@ void loop() {
     DateTime now = RTC.now();
       
       if (now.dayOfTheWeek() == 0)  {                                                   // Sonntag
-       if (Zu == 1) { 
+       if (Safe == 1) { 
         servo.write(Auf);
         digitalWrite(LampeAuto, HIGH);
         ZustandAutomatik = 1;}}
       
       if (now.dayOfTheWeek() == 1)                                                      // Montag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 10) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -120,13 +120,13 @@ void loop() {
             ZustandAutomatik = 1;}}
           
       if (now.dayOfTheWeek() == 2)  {                                                   // Dienstag
-        if (Zu == 1) {  
+        if (Safe == 1) {  
           servo.write(Auf);
           digitalWrite(LampeAuto, HIGH);
           ZustandAutomatik = 1;}} 
       
       if (now.dayOfTheWeek() == 3)                                                      // Mittwoch
-       if (Zu == 1) {
+       if (Safe == 1) {
         if (now.hour() == 10) {
           servo.write(Zu);
           digitalWrite(LampeAuto, LOW);
@@ -137,7 +137,7 @@ void loop() {
           ZustandAutomatik = 1;}}
 
        if (now.dayOfTheWeek() == 4)                                                     // Donnerstag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 15) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -148,7 +148,7 @@ void loop() {
             ZustandAutomatik = 1;}}
           
        if (now.dayOfTheWeek() == 5)                                                     // Freitag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 10) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -167,7 +167,7 @@ void loop() {
             ZustandAutomatik = 1;}}
           
       if (now.dayOfTheWeek() == 6)  {                                                   // Samstag
-       if (Zu == 1) {
+       if (Safe == 1) {
         servo.write(Auf);
         digitalWrite(LampeAuto, HIGH);
         ZustandAutomatik = 1;}}

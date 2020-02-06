@@ -5,6 +5,7 @@
 
   Version 2.0:
   Troublehoot: Der Automatikmodus funktionierte nicht, genauere Definition der Uhrzeit nötig.
+  Neuer Ansatz: Man definiert durch das logische oder "||" einfach alle Uhrzeiten, dann wird der Servo auch immer korrekt gesteuert wenn der Automatik Modus neu angeschalten wird.
   
  */
 
@@ -78,7 +79,7 @@ void loop() {
 
   EthernetClient client = server.available();                                           // Nach neuem Client suchen
 
-  int Zu = digitalRead(SensorKlappe);
+  int Safe = digitalRead(SensorKlappe);                                                 // Sicherheitsfunktion, Servo wird nur gefahren wenn Klappe zu
   int Einwurf = digitalRead(SensorEinwurf);                                             // Liest den Sensor kontinuierlich ein (Pull Up: Standartsensorwert = 1)
    
     if (Einwurf == 0 && Prello == 0) {                                                  // Zählt bei Einwurf == 0 den Eingeworfen nach oben
@@ -94,13 +95,13 @@ void loop() {
     DateTime now = RTC.now();
       
       if (now.dayOfTheWeek() == 0)  {                                                   // Sonntag
-       if (Zu == 1) { 
+       if (Safe == 1) { 
         servo.write(Auf);
         digitalWrite(LampeAuto, HIGH);
         ZustandAutomatik = 1;}}
       
       if (now.dayOfTheWeek() == 1) {                                                     // Montag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17 || now.hour() == 18) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -111,13 +112,13 @@ void loop() {
             ZustandAutomatik = 1;}}}
           
       if (now.dayOfTheWeek() == 2)  {                                                   // Dienstag
-        if (Zu == 1) {  
+        if (Safe == 1) {  
           servo.write(Auf);
           digitalWrite(LampeAuto, HIGH);
           ZustandAutomatik = 1;}} 
       
       if (now.dayOfTheWeek() == 3)  {                                                   // Mittwoch
-       if (Zu == 1) {
+       if (Safe == 1) {
         if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 13 || now.hour() == 14 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -128,7 +129,7 @@ void loop() {
             ZustandAutomatik = 1;}}}
 
        if (now.dayOfTheWeek() == 4)  {                                                  // Donnerstag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 15 || now.hour() == 16 || now.hour() == 17) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -139,7 +140,7 @@ void loop() {
             ZustandAutomatik = 1;}}}
           
        if (now.dayOfTheWeek() == 5)  {                                                   // Freitag
-        if (Zu == 1) {
+        if (Safe == 1) {
           if (now.hour() == 10 || now.hour() == 11 || now.hour() == 12 || now.hour() == 15 || now.hour() == 16 || now.hour() == 17 || now.hour() == 18) {
             servo.write(Zu);
             digitalWrite(LampeAuto, LOW);
@@ -150,7 +151,7 @@ void loop() {
             ZustandAutomatik = 1;}}}
           
       if (now.dayOfTheWeek() == 6)  {                                                   // Samstag
-       if (Zu == 1) {
+       if (Safe == 1) {
         servo.write(Auf);
         digitalWrite(LampeAuto, HIGH);
         ZustandAutomatik = 1;}}
