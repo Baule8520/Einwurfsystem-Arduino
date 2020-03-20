@@ -13,3 +13,5 @@ Die verwendete Hardware war ein Arduino UNO mit aufgestecktem Ethernet Shield Ve
 Dementsprechend muss die Arduino IDE zum Kompilieren und Uploaden installiert sein.
 
 Anbei sind außerdem die von mir verwendeten Libraries (libraries)
+
+Ausführliche Dokumentation unter: https://wiki.tum.de/pages/viewpage.action?pageId=394625561
